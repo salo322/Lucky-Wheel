@@ -27,7 +27,8 @@
       :countdown="countdown" 
      />
   
-      <audio ref="spinSound" src="/sounds/spin.mp3"></audio>
+      <audio ref="spinSound" src="public/sounds/spin.mp3"></audio>
+
     </div>
   </template>
   
