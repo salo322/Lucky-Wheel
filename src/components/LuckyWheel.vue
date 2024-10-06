@@ -16,16 +16,19 @@
         </div>
       </div>
   
+     <div class="bottom-container">
       <div class="countdown" v-if="countdown > 0">
         Next spin in: {{ countdown }} seconds
       </div>
-  
       <BalanceManager 
       ref="balanceManager" 
       @bet-placed="onBetPlaced" 
       :rolling="rolling" 
       :countdown="countdown" 
      />
+
+     <Leaderboard :topWinnings="topWinnings" />
+     </div>
   
       <audio ref="spinSound" src="public/sounds/spin.mp3"></audio>
 
@@ -34,11 +37,13 @@
   
   <script>
   import BalanceManager from './BalanceManager.vue';
+  import Leaderboard from './Leaderboard.vue';
   
   export default {
     components: {
-      BalanceManager
-    },
+    BalanceManager,
+    Leaderboard
+},
     data() {
       return {
         freeze: false,
@@ -56,7 +61,8 @@
           { name: "$500", value: 500 },
           { name: "$1000", value: 1000 },
           { name: "Lost", value: 0 }
-        ]
+        ],
+        topWinnings: []
       };
     },
     computed: {
@@ -101,10 +107,27 @@
   
           this.$refs.balanceManager.addPrizeToBalance(prizeValue, prizeName);
   
+          if (prizeValue > 0) {
+          console.log('Updating leaderboard with:', { name: prizeName, value: prizeValue });
+
+          // Update topWinnings array
+          this.updateLeaderboard({ name: prizeName, value: prizeValue });
+        }
+
           this.startCountdown();
           
         }, 4500);
       },
+      updateLeaderboard(newPrize) {
+      // Add the new prize to topWinnings and sort
+      const updatedWinnings = [...this.topWinnings, newPrize].sort((a, b) => b.value - a.value);
+
+      // Store only the top 3 winnings
+      this.topWinnings = updatedWinnings.slice(0, 3);
+
+      // Save top winnings to localStorage
+      localStorage.setItem('topWinnings', JSON.stringify(this.topWinnings));
+    },
       startCountdown() {
         this.countdown = 10; 
   
@@ -115,21 +138,32 @@
           }
         }, 1000); 
       }
+    },
+    mounted() {
+    // Load the top winnings from localStorage when the component mounts
+    const storedWinnings = localStorage.getItem('topWinnings');
+    if (storedWinnings) {
+      this.topWinnings = JSON.parse(storedWinnings);
     }
+  }
+
   };
   </script>
   
   <style scoped>
-  html {
-    background: #dd7c7d;
-  }
   *{
     box-sizing: border-box;
   }
-  .wheel-main-container{
+  .bottom-container{
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    max-width: 304px;
+  }
+  .wheel-main-container{
+    display: flex;
+    gap: 40px;
+    align-items: center;
   }
   .prize-list .prize-item-wrapper:nth-child(odd) .prize-item {
     background-color: #FD8B51;
