@@ -1,9 +1,9 @@
 <template>
   <div class="leaderboard">
-    <h3>Top 3 Winnings</h3>
+    <h3>Top 3 Winnings LeaderBoard</h3>
     <ol>
       <li v-for="(winning, index) in topWinnings" :key="index">
-        {{ winning.name }} - ${{ winning.value }}
+        ${{ winning.value }}
       </li>
     </ol>
   </div>

@@ -85,13 +85,14 @@
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     margin: 0 auto;
+    min-height: 247px;
   }
   
   .input-group {
